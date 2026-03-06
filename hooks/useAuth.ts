@@ -66,7 +66,11 @@ function useClerkAuth() {
       return data;
     },
     enabled: isLoaded && !!isSignedIn,
-    retry: false,
+    // On first Clerk login, the backend user may not exist yet (race with
+    // provisioning). Retry up to 3 times with exponential backoff so the
+    // backend has time to create the user record.
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 8000),
     staleTime: 1000 * 60 * 5,
   });
 

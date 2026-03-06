@@ -15,16 +15,24 @@ export function useDeepLink() {
 
   useEffect(() => {
     function handleURL(event: { url: string }) {
-      const code = parseInviteCode(event.url);
-      if (code) {
-        router.push(`/invite/${code}` as any);
+      try {
+        const code = parseInviteCode(event.url);
+        if (code) {
+          router.push(`/invite/${code}` as any);
+        }
+      } catch (err) {
+        console.warn("[DeepLink] failed to handle URL:", event.url, err);
       }
     }
 
     // Handle URL that launched the app (cold start)
-    Linking.getInitialURL().then((url) => {
-      if (url) handleURL({ url });
-    });
+    Linking.getInitialURL()
+      .then((url) => {
+        if (url) handleURL({ url });
+      })
+      .catch((err) => {
+        console.warn("[DeepLink] failed to get initial URL:", err);
+      });
 
     // Handle URLs while app is running (warm start)
     const subscription = Linking.addEventListener("url", handleURL);

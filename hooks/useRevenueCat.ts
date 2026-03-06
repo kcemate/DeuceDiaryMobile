@@ -55,10 +55,10 @@ export function useRevenueCat() {
       const { customerInfo } = await Purchases.purchaseProduct(
         PRODUCT_IDS.monthly,
       );
-      const premium =
-        Object.keys(customerInfo.entitlements.active).length > 0;
+      const activeEntitlements = Object.keys(customerInfo.entitlements.active);
+      const premium = activeEntitlements.length > 0;
       setIsPremium(premium);
-      if (premium) await syncWithBackend();
+      if (premium) await syncWithBackend({ activeEntitlements, productId: PRODUCT_IDS.monthly });
       return { success: premium };
     } catch (err: any) {
       if (err.userCancelled) return { success: false, cancelled: true };
@@ -77,10 +77,10 @@ export function useRevenueCat() {
       const { customerInfo } = await Purchases.purchaseProduct(
         PRODUCT_IDS.annual,
       );
-      const premium =
-        Object.keys(customerInfo.entitlements.active).length > 0;
+      const activeEntitlements = Object.keys(customerInfo.entitlements.active);
+      const premium = activeEntitlements.length > 0;
       setIsPremium(premium);
-      if (premium) await syncWithBackend();
+      if (premium) await syncWithBackend({ activeEntitlements, productId: PRODUCT_IDS.annual });
       return { success: premium };
     } catch (err: any) {
       if (err.userCancelled) return { success: false, cancelled: true };
@@ -97,10 +97,10 @@ export function useRevenueCat() {
 
     try {
       const info = await Purchases.restorePurchases();
-      const premium =
-        Object.keys(info.entitlements.active).length > 0;
+      const activeEntitlements = Object.keys(info.entitlements.active);
+      const premium = activeEntitlements.length > 0;
       setIsPremium(premium);
-      if (premium) await syncWithBackend();
+      if (premium) await syncWithBackend({ activeEntitlements });
       return { success: premium };
     } catch (err) {
       console.error("[RevenueCat] restore error:", err);

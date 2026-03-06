@@ -29,12 +29,29 @@
       "infoPlist": {
         "NSUserNotificationUsageDescription": "Deuce Diary sends you streak reminders so you never miss a day.",
         "NSPhotoLibraryUsageDescription": "Deuce Diary uses your photo library to set a profile picture.",
+        "NSUserTrackingUsageDescription": "Deuce Diary uses this to measure ad performance and improve your experience.",
         "UIBackgroundModes": ["remote-notification"],
         "SKAdNetworkItems": [
           { "SKAdNetworkIdentifier": "cstr6suwn9.skadnetwork" },
           { "SKAdNetworkIdentifier": "4fzdc2evr5.skadnetwork" },
           { "SKAdNetworkIdentifier": "2fnua5tdw4.skadnetwork" }
-        ]
+        ],
+        "NSPrivacyTracking": false,
+        "NSPrivacyCollectedDataTypes": [
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypePushToken",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAppFunctionality"]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeProductInteraction",
+            "NSPrivacyCollectedDataTypeLinked": true,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAnalytics"]
+          }
+        ],
+        "NSPrivacyTrackingDomains": []
       }
     },
     "android": {

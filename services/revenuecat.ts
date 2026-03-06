@@ -53,9 +53,15 @@ export async function getCustomerInfo(): Promise<{
 }
 
 /**
- * After a successful purchase, notify the backend so it can update
- * the user's subscription status in the database.
+ * After a successful purchase, immediately notify the backend so it can
+ * update the user's subscription status without waiting for the webhook.
  */
-export async function syncWithBackend(userId?: string): Promise<void> {
-  await api.post("/api/subscription/upgrade", userId ? { userId } : undefined);
+export async function syncWithBackend(customerInfo?: {
+  activeEntitlements: string[];
+  productId?: string;
+}): Promise<void> {
+  await api.post("/api/user/subscription", {
+    source: "revenuecat",
+    ...(customerInfo ?? {}),
+  });
 }

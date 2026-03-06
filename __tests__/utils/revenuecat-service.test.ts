@@ -79,20 +79,22 @@ describe("services/revenuecat", () => {
   });
 
   describe("syncWithBackend", () => {
-    it("posts to /api/subscription/upgrade", async () => {
+    it("posts to /api/user/subscription", async () => {
       const { api } = require("../../api/index");
       await syncWithBackend();
       expect(api.post).toHaveBeenCalledWith(
-        "/api/subscription/upgrade",
-        undefined
+        "/api/user/subscription",
+        { source: "revenuecat" }
       );
     });
 
-    it("sends userId when provided", async () => {
+    it("sends customerInfo when provided", async () => {
       const { api } = require("../../api/index");
-      await syncWithBackend("user-123");
-      expect(api.post).toHaveBeenCalledWith("/api/subscription/upgrade", {
-        userId: "user-123",
+      await syncWithBackend({ activeEntitlements: ["premium"], productId: "monthly" });
+      expect(api.post).toHaveBeenCalledWith("/api/user/subscription", {
+        source: "revenuecat",
+        activeEntitlements: ["premium"],
+        productId: "monthly",
       });
     });
   });
