@@ -262,7 +262,7 @@ export default function SquadDetailScreen() {
   });
 
   // Realtime updates
-  useGroupSocket(squadId ?? null, () => {
+  const { connectionState: _wsState } = useGroupSocket(squadId ?? null, () => {
     queryClient.invalidateQueries({ queryKey: ["feed", squadId] });
     queryClient.invalidateQueries({ queryKey: ["streak", squadId] });
   });
