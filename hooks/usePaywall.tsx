@@ -66,7 +66,7 @@ export const FEATURE_CONFIG: Record<PaywallFeature, FeatureConfig> = {
 // ── Suppressed routes — never show paywall here ─────────────────────────
 // Checked against current navigation segments; if any segment matches, the
 // automatic 403 interceptor will NOT trigger.
-const SUPPRESSED_SEGMENTS = ["auth", "onboarding", "invite", "legacy"];
+const SUPPRESSED_SEGMENTS = ["auth", "onboarding", "invite", "legacy", "premium"];
 
 // ── Context ─────────────────────────────────────────────────────────────
 interface PaywallContextValue {
