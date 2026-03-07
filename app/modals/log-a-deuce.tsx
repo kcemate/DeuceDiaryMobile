@@ -16,6 +16,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Notifications from "expo-notifications";
 import { postDeuce } from "../../api/deuces";
 import { listSquads } from "../../api/squads";
+import { getErrorMessage } from "../../api";
 import { cancelStreakReminder } from "../../hooks/useNotifications";
 import { Colors } from "../../constants/colors";
 import type { Squad } from "../../types/api.types";
@@ -60,6 +61,7 @@ export default function LogADeuceModal() {
   const [selectedGroupIds, setSelectedGroupIds] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const isOverLimit = thought.length > MAX_THOUGHT_LENGTH;
 
@@ -80,6 +82,7 @@ export default function LogADeuceModal() {
     if (submitting) return;
 
     setSubmitting(true);
+    setSubmitError(null);
     try {
       const result = await postDeuce({
         groupIds: selectedGroupIds,
@@ -99,7 +102,8 @@ export default function LogADeuceModal() {
       setTimeout(() => {
         router.back();
       }, 1800);
-    } catch {
+    } catch (err) {
+      setSubmitError(getErrorMessage(err));
       setSubmitting(false);
     }
   }
@@ -188,6 +192,12 @@ export default function LogADeuceModal() {
               })}
             </ScrollView>
           </>
+        ) : null}
+
+        {submitError ? (
+          <Text style={styles.submitError} accessibilityRole="alert">
+            {submitError}
+          </Text>
         ) : null}
 
         <TouchableOpacity
@@ -316,6 +326,13 @@ const styles = StyleSheet.create({
   },
   pillTextSelected: {
     color: Colors.white,
+  },
+  submitError: {
+    fontSize: 14,
+    color: "#CC3333",
+    textAlign: "center",
+    marginBottom: 12,
+    fontWeight: "500",
   },
   submitButton: {
     backgroundColor: Colors.green,

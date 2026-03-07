@@ -16,6 +16,8 @@ import { listSquads, createSquad, getGroupStreak } from "../../../api/squads";
 import { useAuth } from "../../../hooks/useAuth";
 import { usePaywall } from "../../../hooks/usePaywall";
 import { Colors } from "../../../constants/colors";
+import { ErrorState } from "../../components/ErrorState";
+import { getErrorMessage } from "../../../api";
 import type { Squad, StreakData } from "../../../types/api.types";
 
 function relativeTime(dateStr: string | null | undefined): string {
@@ -45,6 +47,8 @@ export default function SquadsScreen() {
   const {
     data: squads,
     isLoading,
+    isError,
+    error,
     refetch,
     isRefetching,
   } = useQuery({
@@ -128,6 +132,15 @@ export default function SquadsScreen() {
       <View style={styles.center}>
         <ActivityIndicator size="large" color={Colors.green} />
       </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <ErrorState
+        message={getErrorMessage(error)}
+        onRetry={() => refetch()}
+      />
     );
   }
 

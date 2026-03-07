@@ -19,6 +19,8 @@ import { useAuth } from "../../../hooks/useAuth";
 import { useRevenueCat } from "../../../hooks/useRevenueCat";
 import { usePaywall } from "../../../hooks/usePaywall";
 import { Colors } from "../../../constants/colors";
+import { ErrorState } from "../../components/ErrorState";
+import { getErrorMessage } from "../../../api";
 import type { Deuce, StreakData, SquadDetail } from "../../../types/api.types";
 
 const REACTION_EMOJIS = ["💩", "🔥", "😂", "👑", "🙏"];
@@ -223,6 +225,9 @@ export default function SquadDetailScreen() {
   const {
     data: detail,
     isLoading: detailLoading,
+    isError: detailError,
+    error: detailErrorObj,
+    refetch: refetchDetail,
   } = useQuery<SquadDetail>({
     queryKey: ["squad", squadId],
     queryFn: () => getSquadDetail(squadId!),
@@ -303,12 +308,25 @@ export default function SquadDetailScreen() {
   }
 
   const isLoading = detailLoading || streakLoading || feedLoading;
+  const hasError = detailError;
 
   if (isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color={Colors.green} />
       </View>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <ErrorState
+        message={getErrorMessage(detailErrorObj)}
+        onRetry={() => {
+          refetchDetail();
+          refetch();
+        }}
+      />
     );
   }
 

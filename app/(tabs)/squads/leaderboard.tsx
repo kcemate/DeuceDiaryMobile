@@ -22,7 +22,7 @@ export default function LeaderboardScreen() {
   const { groupId } = useLocalSearchParams<{ groupId: string }>();
   const router = useRouter();
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["leaderboard", groupId],
     queryFn: () => getGroupLeaderboard(groupId!),
     enabled: !!groupId,
@@ -42,7 +42,18 @@ export default function LeaderboardScreen() {
       {isLoading ? (
         <ActivityIndicator color="#C8A951" size="large" style={styles.centered} />
       ) : isError ? (
-        <Text style={styles.emptyText}>Failed to load leaderboard</Text>
+        <View style={styles.errorContainer}>
+          <Text style={styles.emptyText}>Failed to load leaderboard</Text>
+          <TouchableOpacity
+            style={styles.retryButton}
+            onPress={() => refetch()}
+            activeOpacity={0.7}
+            accessibilityLabel="Retry loading leaderboard"
+            accessibilityRole="button"
+          >
+            <Text style={styles.retryButtonText}>Try Again</Text>
+          </TouchableOpacity>
+        </View>
       ) : !data || data.length === 0 ? (
         <Text style={styles.emptyText}>No members yet</Text>
       ) : (
@@ -114,6 +125,21 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 60,
     fontSize: 15,
+  },
+  errorContainer: {
+    alignItems: "center",
+  },
+  retryButton: {
+    marginTop: 16,
+    backgroundColor: "#C8A951",
+    paddingVertical: 12,
+    paddingHorizontal: 28,
+    borderRadius: 999,
+  },
+  retryButtonText: {
+    color: "#1A0F00",
+    fontSize: 15,
+    fontWeight: "bold",
   },
   list: {
     paddingVertical: 12,

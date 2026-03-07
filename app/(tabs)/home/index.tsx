@@ -13,6 +13,8 @@ import { useQueryFeed } from "../../../hooks/useQueryFeed";
 import { useAuth } from "../../../hooks/useAuth";
 import { addReaction } from "../../../api/deuces";
 import { Colors } from "../../../constants/colors";
+import { ErrorState } from "../../components/ErrorState";
+import { getErrorMessage } from "../../../api";
 import type { Deuce } from "../../../types/api.types";
 
 const REACTION_EMOJIS = ["💩", "🔥", "😂", "👑", "🙏"];
@@ -198,7 +200,7 @@ export default function HomeScreen() {
   const router = useRouter();
   const { user } = useAuth();
   const isFree = user?.subscription !== "premium";
-  const { data: feed, isLoading, refetch, isRefetching } = useQueryFeed();
+  const { data: feed, isLoading, isError, error, refetch, isRefetching } = useQueryFeed();
 
   const handleReact = useCallback(
     async (entryId: string, emoji: string) => {
@@ -222,6 +224,15 @@ export default function HomeScreen() {
           <SkeletonCard />
         </View>
       </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <ErrorState
+        message={getErrorMessage(error)}
+        onRetry={() => refetch()}
+      />
     );
   }
 
