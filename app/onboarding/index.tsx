@@ -75,6 +75,7 @@ export default function OnboardingScreen() {
   const router = useRouter();
   const flatListRef = useRef<FlatList<Slide>>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const isNavigating = useRef(false);
 
   // Fade animation for slide content
   const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -129,6 +130,8 @@ export default function OnboardingScreen() {
   const isLastSlide = currentIndex === slides.length - 1;
 
   async function handleGetStarted() {
+    if (isNavigating.current) return;
+    isNavigating.current = true;
     await completeOnboarding();
     router.replace("/auth/sign-in" as any);
   }
