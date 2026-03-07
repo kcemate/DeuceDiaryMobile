@@ -38,7 +38,7 @@ async function registerPushToken() {
 
 // ── Streak reminder scheduling ───────────────────────────────────────
 
-async function scheduleStreakReminder() {
+export async function scheduleStreakReminder(hour = 20, minute = 0) {
   // Cancel existing reminder before re-scheduling
   await Notifications.cancelScheduledNotificationAsync(STREAK_REMINDER_ID).catch(
     () => {},
@@ -52,10 +52,16 @@ async function scheduleStreakReminder() {
     },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.DAILY,
-      hour: 20,
-      minute: 0,
+      hour,
+      minute,
     },
   });
+}
+
+export async function cancelAllStreakReminders() {
+  await Notifications.cancelScheduledNotificationAsync(STREAK_REMINDER_ID).catch(
+    () => {},
+  );
 }
 
 /**

@@ -6,6 +6,7 @@ import { useDeepLink } from "../hooks/useDeepLink";
 import { useNotifications } from "../hooks/useNotifications";
 import { PaywallProvider } from "../hooks/usePaywall";
 import { PaywallModal } from "./components/PaywallModal";
+import { PushOptInModal, hasSeenPushPrompt } from "./components/PushOptInModal";
 import { hasCompletedOnboarding } from "./onboarding";
 import { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
@@ -27,6 +28,7 @@ function AuthGate() {
   const router = useRouter();
   const [onboardingChecked, setOnboardingChecked] = useState(false);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
+  const [showPushOptIn, setShowPushOptIn] = useState(false);
 
   // Activate deep link listener
   useDeepLink();
@@ -43,13 +45,26 @@ function AuthGate() {
     }
   }, [isAuthenticated, user?.deuceCount]);
 
-  // Check onboarding status on mount
+  // Check onboarding status on mount — skip entirely for authenticated Clerk users
   useEffect(() => {
+    if (CLERK_ENABLED && isAuthenticated) {
+      setNeedsOnboarding(false);
+      setOnboardingChecked(true);
+      return;
+    }
     hasCompletedOnboarding().then((completed) => {
       setNeedsOnboarding(!completed);
       setOnboardingChecked(true);
     });
-  }, []);
+  }, [isAuthenticated]);
+
+  // Show push opt-in prompt once after first authentication
+  useEffect(() => {
+    if (!isAuthenticated || !onboardingChecked) return;
+    hasSeenPushPrompt().then((seen) => {
+      if (!seen) setShowPushOptIn(true);
+    });
+  }, [isAuthenticated, onboardingChecked]);
 
   useEffect(() => {
     if (isLoading || !onboardingChecked) return;
@@ -96,10 +111,15 @@ function AuthGate() {
         <Stack.Screen name="legacy/[username]" options={{ headerShown: true, title: "Legacy Wall" }} />
         <Stack.Screen name="premium/index" options={{ headerShown: true, title: "Premium" }} />
         <Stack.Screen name="settings/index" options={{ headerShown: true, title: "Settings" }} />
+        <Stack.Screen name="settings/notifications" options={{ headerShown: true, title: "Notifications" }} />
         <Stack.Screen name="settings/widget-preview" options={{ headerShown: true, title: "Widget Preview" }} />
         <Stack.Screen name="referral/index" options={{ headerShown: true, title: "Refer Friends" }} />
       </Stack>
       <PaywallModal />
+      <PushOptInModal
+        visible={showPushOptIn}
+        onDismiss={() => setShowPushOptIn(false)}
+      />
     </PaywallProvider>
   );
 }

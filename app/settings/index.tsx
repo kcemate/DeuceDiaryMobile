@@ -112,21 +112,38 @@ export default function SettingsScreen() {
         );
       })}
 
+      {/* Notification preferences link */}
+      <TouchableOpacity
+        style={[styles.linkRow, { marginTop: 28 }]}
+        onPress={() => router.push("/settings/notifications")}
+        activeOpacity={0.7}
+        accessibilityLabel="Notification preferences"
+        accessibilityRole="button"
+        accessibilityHint="Manage your notification settings"
+      >
+        <Text style={styles.linkEmoji}>{"\uD83D\uDD14"}</Text>
+        <View style={styles.linkTextGroup}>
+          <Text style={styles.linkTitle}>Notifications</Text>
+          <Text style={styles.linkSubtitle}>Reminders, alerts &amp; reports</Text>
+        </View>
+        <Text style={styles.linkChevron}>{"\u203A"}</Text>
+      </TouchableOpacity>
+
       {/* Widget preview link */}
       <TouchableOpacity
-        style={styles.widgetRow}
+        style={styles.linkRow}
         onPress={() => router.push("/settings/widget-preview")}
         activeOpacity={0.7}
         accessibilityLabel="Coming soon: home screen widget"
         accessibilityRole="button"
         accessibilityHint="See a preview of the upcoming home screen widget"
       >
-        <Text style={styles.widgetEmoji}>{"\uD83D\uDD25"}</Text>
-        <View style={styles.widgetTextGroup}>
-          <Text style={styles.widgetTitle}>Home Screen Widget</Text>
-          <Text style={styles.widgetSubtitle}>Coming Soon</Text>
+        <Text style={styles.linkEmoji}>{"\uD83D\uDD25"}</Text>
+        <View style={styles.linkTextGroup}>
+          <Text style={styles.linkTitle}>Home Screen Widget</Text>
+          <Text style={styles.linkSubtitle}>Coming Soon</Text>
         </View>
-        <Text style={styles.widgetChevron}>{"\u203A"}</Text>
+        <Text style={styles.linkChevron}>{"\u203A"}</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -196,36 +213,36 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: Colors.green,
   },
-  // Widget link
-  widgetRow: {
+  // Navigation links
+  linkRow: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: Colors.white,
     borderRadius: 16,
     padding: 16,
-    marginTop: 28,
+    marginTop: 12,
     borderWidth: 1,
-    borderColor: Colors.gold,
+    borderColor: Colors.lightGray,
   },
-  widgetEmoji: {
+  linkEmoji: {
     fontSize: 24,
     marginRight: 14,
   },
-  widgetTextGroup: {
+  linkTextGroup: {
     flex: 1,
   },
-  widgetTitle: {
+  linkTitle: {
     fontSize: 16,
     fontWeight: "600",
     color: Colors.espresso,
   },
-  widgetSubtitle: {
+  linkSubtitle: {
     fontSize: 12,
-    color: Colors.gold,
-    fontWeight: "600",
+    color: Colors.secondaryText,
+    fontWeight: "500",
     marginTop: 2,
   },
-  widgetChevron: {
+  linkChevron: {
     fontSize: 24,
     color: Colors.gray,
     fontWeight: "300",
