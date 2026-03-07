@@ -65,15 +65,32 @@ function StreakCard({
   isPremium,
   onStreakPaywall,
   previousStreak,
+  groupName,
 }: {
   streak: StreakData;
   isPremium: boolean;
   onStreakPaywall: () => void;
   previousStreak: number | null;
+  groupName: string;
 }) {
   const active = streak.currentStreak > 0;
   const badge = getMilestoneBadge(streak.currentStreak);
   const milestoneLabel = getMilestoneLabel(streak.currentStreak);
+  const pendingMembers = streak.logsToday.filter((m) => !m.hasLogged);
+  const streakAtRisk = active && pendingMembers.length > 0;
+
+  async function handleStreakRescue() {
+    const names = pendingMembers.map((m) => m.username).join(", ");
+    const message =
+      `🔥 Save our streak! ${groupName} is on a ${streak.currentStreak}-day streak — don't let it die!\n\n` +
+      `Waiting on: ${names}\n\n` +
+      `Open Deuce Diary and log now! 💩`;
+    try {
+      await Share.share({ message });
+    } catch {
+      // user cancelled
+    }
+  }
   // Trigger (e): streak was lost (previous was >0, now is 0)
   const streakLost = previousStreak !== null && previousStreak > 0 && streak.currentStreak === 0;
 
@@ -105,6 +122,22 @@ function StreakCard({
             >
               <Text style={styles.streakInsuranceText}>
                 {"\uD83D\uDEE1\uFE0F"} Streak Insurance
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          {/* Streak Rescue: nudge members who haven't logged */}
+          {streakAtRisk && (
+            <TouchableOpacity
+              style={styles.streakRescueButton}
+              onPress={handleStreakRescue}
+              activeOpacity={0.8}
+              accessibilityLabel="Save our streak"
+              accessibilityRole="button"
+              accessibilityHint="Share a message to remind your squad to log"
+            >
+              <Text style={styles.streakRescueText}>
+                {"\uD83D\uDEA8"} Save our streak!
               </Text>
             </TouchableOpacity>
           )}
@@ -376,6 +409,7 @@ export default function SquadDetailScreen() {
           isPremium={isPremium}
           onStreakPaywall={() => showPaywall("streak_insurance")}
           previousStreak={previousStreakRef.current}
+          groupName={group?.name ?? "Squad"}
         />
       ) : null}
 
@@ -545,6 +579,19 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "700",
     color: Colors.gold,
+  },
+  // Streak Rescue button
+  streakRescueButton: {
+    marginTop: 12,
+    backgroundColor: Colors.green,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 999,
+  },
+  streakRescueText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: Colors.white,
   },
   // Streak loss prompt
   streakLossPrompt: {
