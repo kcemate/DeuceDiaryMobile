@@ -1,6 +1,19 @@
 # Deuce Diary
 
-Log deuces with friends. The social bathroom tracker nobody asked for.
+Deuce Diary Mobile is an Expo/React Native companion app for DeuceDiary.
+
+It demonstrates mobile product work across authentication, tab navigation, squad workflows, logging flows, push notification opt-ins, premium/paywall UI, offline/error states, and App Store preparation.
+
+## What It Shows
+
+- Expo Router navigation with tabbed and modal flows.
+- Mobile-first logging, profile, squad, invite, referral, onboarding, and premium screens.
+- API client modules for auth, logging, and squads.
+- Clerk-ready authentication path plus development sign-in.
+- Push notification opt-in and notification settings.
+- Offline/error/skeleton states for resilient mobile UX.
+- App Store metadata and EAS build configuration.
+- Jest test setup for React Native components.
 
 ## Quickstart
 
